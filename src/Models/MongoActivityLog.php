@@ -2,7 +2,7 @@
 
 namespace LaithAlEnooz\ActivityLog\Models;
 
-use MongoDB\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class MongoActivityLog extends Model
