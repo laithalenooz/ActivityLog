@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class MongoActivityLog extends Model
 {
 	protected $collection = 'activity_logs';
+	protected $connection = 'mongodb';
 
 	protected $fillable = [
 		'log_name', 'description', 'subject_id', 'subject_type',
