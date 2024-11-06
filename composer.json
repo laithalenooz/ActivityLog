@@ -10,7 +10,7 @@
     },
     "require": {
         "php": ">=8.2",
-        "illuminate/support": "12.x-dev"
+        "illuminate/support": "^11.30"
     },
     "authors": [
         {
@@ -28,5 +28,5 @@
             }
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
