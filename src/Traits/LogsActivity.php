@@ -11,6 +11,9 @@ trait LogsActivity
 	{
 		foreach (static::getModelEventsToLog() as $event) {
 			static::$event(function ($model) use ($event) {
+				if ($model instanceof \LaithAlEnooz\ActivityLog\Models\ActivityLog) {
+					return;
+				}
 				$description = ucfirst($event) . ' ' . class_basename($model);
 				$causer = Auth::user();
 

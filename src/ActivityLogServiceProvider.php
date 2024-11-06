@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use LaithAlEnooz\ActivityLog\Contracts\ActivityLogRepositoryInterface;
 use LaithAlEnooz\ActivityLog\Repositories\MySQLActivityLogRepository;
 use LaithAlEnooz\ActivityLog\Repositories\MongoDBActivityLogRepository;
-use LaithAlEnooz\ActivityLog\Logger\ActivityLogger;
 
 class ActivityLogServiceProvider extends ServiceProvider
 {
@@ -43,9 +42,9 @@ class ActivityLogServiceProvider extends ServiceProvider
 		});
 
 		// Register the ActivityLogger
-		$this->app->singleton(ActivityLogger::class, function ($app) {
-			return new ActivityLogger(
-				$app->make(ActivityLogRepositoryInterface::class),
+		$this->app->singleton(\LaithAlEnooz\ActivityLog\Logger\ActivityLogger::class, function ($app) {
+			return new \LaithAlEnooz\ActivityLog\Logger\ActivityLogger(
+				$app->make(\LaithAlEnooz\ActivityLog\Contracts\ActivityLogRepositoryInterface::class),
 				config('activitylog.default_log_level', 'info')
 			);
 		});
