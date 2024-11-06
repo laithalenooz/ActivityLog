@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ActivityLogServiceProvider"
+                "LaithAlEnooz\\ActivityLog\\ActivityLogServiceProvider"
             ],
             "aliases": {
                 "ActivityLog": "LaithAlEnooz\\ActivityLog\\Facades\\ActivityLog"
