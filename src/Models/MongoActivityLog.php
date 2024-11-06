@@ -9,6 +9,7 @@ class MongoActivityLog extends Model
 {
 	protected $collection = 'activity_logs';
 	protected $connection = 'mongodb';
+	protected $table = 'activity_logs';
 
 	protected $fillable = [
 		'log_name', 'description', 'subject_id', 'subject_type',

@@ -16,4 +16,9 @@ class MySQLActivityLogRepository implements ActivityLogRepositoryInterface
 	{
 		return ActivityLog::where($criteria)->get();
 	}
+
+	public function prune($cutoffDate)
+	{
+		return ActivityLog::where('created_at', '<', $cutoffDate)->delete();
+	}
 }

@@ -16,4 +16,9 @@ class MongoDBActivityLogRepository implements ActivityLogRepositoryInterface
 	{
 		return MongoActivityLog::where($criteria)->get();
 	}
+
+	public function prune($cutoffDate)
+	{
+		return MongoActivityLog::where('created_at', '<', $cutoffDate)->delete();
+	}
 }

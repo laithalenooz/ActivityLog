@@ -1,6 +1,6 @@
 # ActivityLog
 
-A flexible and customizable activity log package for Laravel 11, supporting multiple databases like MySQL and MongoDB. It provides middleware for logging HTTP requests, customizable log levels, and Eloquent relationships to retrieve the `causer` and `subject` of activities.
+A flexible and customizable activity log package for Laravel 11, supporting multiple databases like MySQL and MongoDB. It provides middleware for logging HTTP requests, customizable log levels, Eloquent relationships to retrieve the `causer` and `subject` of activities, and a data retention feature to manage log storage.
 
 ## Table of Contents
 
@@ -15,6 +15,10 @@ A flexible and customizable activity log package for Laravel 11, supporting mult
     - [Logging HTTP Requests](#logging-http-requests)
     - [Automatic Model Event Logging](#automatic-model-event-logging)
     - [Retrieving Logs](#retrieving-logs)
+- [Data Retention](#data-retention)
+    - [Configuring Data Retention](#configuring-data-retention)
+    - [Pruning Old Logs](#pruning-old-logs)
+    - [Scheduling Automatic Pruning](#scheduling-automatic-pruning)
 - [Advanced Usage](#advanced-usage)
     - [Customizing the Activity Logger](#customizing-the-activity-logger)
     - [Extending the Package](#extending-the-package)
@@ -31,6 +35,7 @@ A flexible and customizable activity log package for Laravel 11, supporting mult
 - **Customizable Log Levels**: Supports `info`, `warning`, `error`, and custom log levels.
 - **Eloquent Relationships**: Retrieve `causer` and `subject` models via Eloquent relationships.
 - **Automatic Model Event Logging**: Automatically logs model `created`, `updated`, and `deleted` events.
+- **Data Retention**: Configurable data retention period with automatic pruning of old logs.
 - **Configurable**: Offers extensive configuration options.
 - **Extensible**: Easily extendable to fit custom needs.
 
@@ -49,7 +54,7 @@ A flexible and customizable activity log package for Laravel 11, supporting mult
 You can install the package via Composer:
 
 ```bash
-composer require laithalenooz/activitylog
+composer require laithalenooz/activity-log
 ```
 
 ---
@@ -120,15 +125,30 @@ return [
     */
 
     'http_request_log_level' => 'info',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data Retention Period
+    |--------------------------------------------------------------------------
+    |
+    | This value determines how long (in days) the activity logs should be
+    | retained before they are deleted. Set it to null if you don't want
+    | to delete old logs automatically.
+    |
+    */
+
+    'data_retention_days' => env('ACTIVITY_LOG_RETENTION_DAYS', 365),
+
 ];
 ```
 
 ### Environment Variables
 
-Set the following in your `.env` file if you need to customize the database connection:
+Set the following in your `.env` file if you need to customize the database connection and data retention period:
 
 ```env
 ACTIVITY_LOG_CONNECTION=mysql
+ACTIVITY_LOG_RETENTION_DAYS=365
 ```
 
 ---
@@ -141,7 +161,7 @@ Run the migrations to create the necessary tables in your database:
 php artisan migrate
 ```
 
-This will create an `activity_logs` table in the specified database connection.
+This will create an `activity_logs` table or collection in the specified database connection.
 
 ---
 
@@ -311,6 +331,57 @@ $activities = $user->activities;
 
 ---
 
+## Data Retention
+
+### Configuring Data Retention
+
+You can configure how long activity logs should be retained before being pruned. This is set in the `config/activitylog.php` configuration file:
+
+```php
+'data_retention_days' => env('ACTIVITY_LOG_RETENTION_DAYS', 365),
+```
+
+- **Default:** 365 days.
+- **Disable Automatic Pruning:** Set `'data_retention_days' => null`.
+
+### Pruning Old Logs
+
+The package provides an Artisan command to prune old activity logs:
+
+```bash
+php artisan activitylog:prune
+```
+
+**Options:**
+
+- `--days=`: Specify the number of days to retain logs. Overrides the configuration.
+
+**Example:**
+
+```bash
+php artisan activitylog:prune --days=30
+```
+
+This command will delete all activity logs older than the specified number of days.
+
+### Scheduling Automatic Pruning
+
+To automate the pruning process, schedule the command in your application's console kernel:
+
+```php
+// app/Console/Kernel.php
+
+protected function schedule(Schedule $schedule)
+{
+    // Prune activity logs daily
+    $schedule->command('activitylog:prune')->daily();
+}
+```
+
+This will run the pruning command every day at midnight, deleting logs older than the retention period specified in your configuration.
+
+---
+
 ## Advanced Usage
 
 ### Customizing the Activity Logger
@@ -369,6 +440,11 @@ You can extend the package by implementing custom repositories, adding new middl
        {
            // Your custom implementation
        }
+
+       public function prune($cutoffDate)
+       {
+           // Your custom implementation
+       }
    }
    ```
 
@@ -410,6 +486,20 @@ class ActivityLogTest extends TestCase
             'log_name' => 'test_log',
             'description' => 'This is a test log',
         ]);
+    }
+
+    public function test_prune_command_deletes_old_logs()
+    {
+        // Create logs with different timestamps
+        ActivityLogModel::factory()->create(['created_at' => now()->subDays(10)]);
+        ActivityLogModel::factory()->create(['created_at' => now()->subDays(5)]);
+        ActivityLogModel::factory()->create(['created_at' => now()]);
+
+        // Run the prune command with a retention period of 7 days
+        $this->artisan('activitylog:prune', ['--days' => 7]);
+
+        // Assert that logs older than 7 days are deleted
+        $this->assertDatabaseCount('activity_logs', 2);
     }
 }
 ```

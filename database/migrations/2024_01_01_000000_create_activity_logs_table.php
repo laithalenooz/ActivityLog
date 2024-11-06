@@ -21,6 +21,7 @@ class CreateActivityLogsTable extends Migration
 			// Indexes for performance
 			$table->index('log_name');
 			$table->index('log_level');
+			$table->index('created_at');
 		});
 	}
 

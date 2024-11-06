@@ -49,4 +49,17 @@ return [
     */
 
     'http_request_log_level' => 'info',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Data Retention Period
+	|--------------------------------------------------------------------------
+	|
+	| This value determines how long (in days) the activity logs should be
+	| retained before they are deleted. Set it to null if you don't want
+	| to delete old logs automatically.
+	|
+	*/
+
+	'data_retention_days' => env('ACTIVITY_LOG_RETENTION_DAYS', 365),
 ];
