@@ -22,7 +22,7 @@ class LogHttpRequests
 				'url'       => $request->fullUrl(),
 				'ip'        => $request->ip(),
 				'headers'   => $request->headers->all(),
-				'request'   => $request->except(['password', 'password_confirmation']), // Exclude sensitive data
+				'request'   => $request->except(['password', 'password_confirmation']),
 				'status'    => $response->getStatusCode(),
 				'response'  => method_exists($response, 'getContent') ? $response->getContent() : null,
 			];

@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ActivityLog extends Model
 {
+	protected $connection = 'mysql';
+
+	protected $table = 'activity_logs';
+
 	protected $fillable = [
 		'log_name', 'description', 'subject_id', 'subject_type',
 		'causer_id', 'causer_type', 'properties', 'log_level',
