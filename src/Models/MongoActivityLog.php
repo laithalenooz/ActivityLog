@@ -21,18 +21,40 @@ class MongoActivityLog extends Model
 	];
 
 	/**
-	 * Get the causer of the activity.
+	 * Get the causer attribute manually from MySQL.
 	 */
-	public function causer(): MorphTo
+	public function getCauserAttribute()
 	{
-		return $this->morphTo(null, null, 'causer_id', 'causer_type');
+		// Check if we have both causer_type and causer_id
+		if (!empty($this->causer_type) && !empty($this->causer_id)) {
+			// Use the causer_type to resolve the model class
+			$modelClass = $this->causer_type;
+
+			// Make sure the model class exists
+			if (class_exists($modelClass)) {
+				return $modelClass::find($this->causer_id);
+			}
+		}
+
+		return null; // Return null if no causer is found
 	}
 
 	/**
-	 * Get the subject of the activity.
+	 * Get the subject attribute manually from MySQL.
 	 */
-	public function subject(): MorphTo
+	public function getSubjectAttribute()
 	{
-		return $this->morphTo(null, null, 'subject_id', 'subject_type');
+		// Check if we have both subject_type and subject_id
+		if (!empty($this->subject_type) && !empty($this->subject_id)) {
+			// Use the subject_type to resolve the model class
+			$modelClass = $this->subject_type;
+
+			// Make sure the model class exists
+			if (class_exists($modelClass)) {
+				return $modelClass::find($this->subject_id);
+			}
+		}
+
+		return null; // Return null if no subject is found
 	}
 }
