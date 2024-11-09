@@ -3,6 +3,7 @@
 namespace LaithAlEnooz\ActivityLog\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use LaithAlEnooz\ActivityLog\Facades\ActivityLog;
 
 class LogHttpRequests
@@ -24,7 +25,7 @@ class LogHttpRequests
 				'headers'   => $request->headers->all(),
 				'request'   => $request->except(['password', 'password_confirmation']),
 				'status'    => $response->getStatusCode(),
-				'response'  => method_exists($response, 'getContent') ? $response->getContent() : null,
+				'response'  => method_exists($response, 'getContent') ? Str::limit($response->getContent(), 1000) : null,
 			];
 
 			ActivityLog::log(
