@@ -25,6 +25,25 @@ class ActivityLogServiceProvider extends ServiceProvider
 			[
 				__DIR__ . '/Middleware/LogHttpRequests.php' => app_path('Http/Middleware/LogHttpRequests.php'),
 			], 'middleware');
+
+		// Publish resources
+		$this->publishes(
+			[
+				__DIR__ . '/../resources' => base_path('resources'),
+			], 'resources');
+
+		// Publish controller
+		$this->publishes(
+			[
+				__DIR__ . '/Http/Controllers/ActivityLogController.php' => app_path('Http/Controllers/ActivityLogController.php'),
+			], 'controller');
+
+		// Register the route macro for the activity log
+		\Route::macro('activityLog', function ($prefix = 'activity-log') {
+			\Route::prefix($prefix)->group(function () {
+				\Route::get('/', 'ActivityLogController@index')->name('activity-log.index');
+			});
+		});
 	}
 
 	public function register()
