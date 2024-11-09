@@ -40,7 +40,7 @@ class ActivityLogServiceProvider extends ServiceProvider
 			], 'controller');
 
 		// Register the route macro for the activity log
-		\Route::macro('activityLog', function ($prefix = 'activity-log') {
+		\Route::macro('activityLog', function ($prefix = 'activity-logs') {
 			\Route::prefix($prefix)->group(function () {
 				\Route::get('/', [ActivityLogController::class, 'index'])->name('activity_logs.index');
 			});
