@@ -2,6 +2,7 @@
 
 namespace LaithAlEnooz\ActivityLog;
 
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\ServiceProvider;
 use LaithAlEnooz\ActivityLog\Contracts\ActivityLogRepositoryInterface;
 use LaithAlEnooz\ActivityLog\Repositories\MySQLActivityLogRepository;
@@ -41,7 +42,7 @@ class ActivityLogServiceProvider extends ServiceProvider
 		// Register the route macro for the activity log
 		\Route::macro('activityLog', function ($prefix = 'activity-log') {
 			\Route::prefix($prefix)->group(function () {
-				\Route::get('/', 'ActivityLogController@index')->name('activity-log.index');
+				\Route::get('/', [ActivityLogController::class, 'index'])->name('activity_logs.index');
 			});
 		});
 	}
