@@ -1,0 +1,33 @@
+{
+    "name": "laithalenooz/activity-log",
+    "description": "A flexible activity log package for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "version": "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "LaithAlEnooz\\ActivityLog\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "illuminate/support": "^11.30"
+    },
+    "authors": [
+        {
+            "name": "Laith Al Enooz",
+            "email": "laith.alenooz@joacademy.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaithAlEnooz\\ActivityLog\\ActivityLogServiceProvider"
+            ],
+            "aliases": {
+                "ActivityLog": "LaithAlEnooz\\ActivityLog\\Facades\\ActivityLog"
+            }
+        }
+    },
+    "minimum-stability": "stable"
+}
