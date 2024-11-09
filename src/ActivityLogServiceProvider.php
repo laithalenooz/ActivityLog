@@ -45,7 +45,7 @@ class ActivityLogServiceProvider extends ServiceProvider
 				->middleware(config('activitylog.log_viewer.middleware'))
 				->group(function () {
 				\Route::get('/', [config('activitylog.log_viewer.controller'), 'index'])
-					->name('activity_log.index');
+					->name('activity_logs.index');
 			});
 		});
 	}
