@@ -7,6 +7,13 @@ use LaithAlEnooz\ActivityLog\Models\MongoActivityLog;
 
 class ActivityLogController extends Controller
 {
+	public function __construct()
+	{
+		if (!config('activitylog.log_viewer.view_enabled')) {
+			abort(404);
+		}
+	}
+
 	public function index(Request $request)
 	{
 		// Start a new query on the MongoActivityLog model
@@ -14,20 +21,22 @@ class ActivityLogController extends Controller
 
 		// Apply filters based on request inputs
 		if ($request->filled('log_name')) {
-			$query->whereIn('log_name', $request->input('log_name'));
+			$query->where('log_name', $request->input('log_name'));
 		}
 
 		if ($request->filled('causer_name')) {
-			$causerName = $request->input('causer_name');
-			$query->where('causer.name', 'like', '%' . $causerName . '%');
+			$causer = $request->input('causer_name');
+			$query->where('causer.name', 'like', '%' . $causer . '%')
+				->orWhere('causer.email', 'like', '%' . $causer . '%')
+				->orWhere('causer._id', 'like', '%' . $causer . '%');
 		}
 
 		if ($request->filled('date_from')) {
-			$query->where('created_at', '>=', $request->input('date_from'));
+			$query->whereDate('created_at', '>=', $request->input('date_from'));
 		}
 
 		if ($request->filled('date_to')) {
-			$query->where('created_at', '<=', $request->input('date_to'));
+			$query->whereDate('created_at', '<=', $request->input('date_to'));
 		}
 
 		// Order by latest

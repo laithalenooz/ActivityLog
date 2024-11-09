@@ -67,6 +67,10 @@ After installing the package, publish the configuration file and middleware:
 php artisan vendor:publish --provider="LaithAlEnooz\ActivityLog\ActivityLogServiceProvider" --tag="config"
 
 php artisan vendor:publish --provider="LaithAlEnooz\ActivityLog\ActivityLogServiceProvider" --tag="middleware"
+
+php artisan vendor:publish --provider="LaithAlEnooz\ActivityLog\ActivityLogServiceProvider" --tag="resources"
+
+php artisan vendor:publish --provider="LaithAlEnooz\ActivityLog\ActivityLogServiceProvider" --tag="controller"
 ```
 
 This will create an `activitylog.php` file in your `config` directory and copy the `LogHttpRequests` middleware to your `app/Http/Middleware` directory.
@@ -126,19 +130,41 @@ return [
 
     'http_request_log_level' => 'info',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Data Retention Period
-    |--------------------------------------------------------------------------
-    |
-    | This value determines how long (in days) the activity logs should be
-    | retained before they are deleted. Set it to null if you don't want
-    | to delete old logs automatically.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Data Retention Period
+	|--------------------------------------------------------------------------
+	|
+	| This value determines how long (in days) the activity logs should be
+	| retained before they are deleted. Set it to null if you don't want
+	| to delete old logs automatically.
+	|
+	*/
 
-    'data_retention_days' => env('ACTIVITY_LOG_RETENTION_DAYS', 365),
+	'data_retention_days' => env('ACTIVITY_LOG_RETENTION_DAYS', 365),
 
+	/*
+	|--------------------------------------------------------------------------
+	| Log Viewer
+	|--------------------------------------------------------------------------
+	|
+	| The log viewer configuration allows you to customize the behavior of the
+	| activity log viewer. You can specify the route prefix, the middleware
+	| to use, and the controller to handle the activity log requests.
+	|
+	*/
+
+	'log_viewer' => [
+
+		'prefix' => 'activity-logs',
+
+		'middleware' => ['web', 'auth'],
+
+		'controller' => App\Http\Controllers\ActivityLogController::class,
+
+		'view_enabled' => true,
+
+	],
 ];
 ```
 
